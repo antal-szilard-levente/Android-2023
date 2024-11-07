@@ -2,4 +2,8 @@
     <string name="app_name">RecipesApp</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="this_is_the_recipe_detail_page">This is the recipe detail page!!</string>
+    <string name="recipe_page">Recipe</string>
+    <string name="go_to_recipe_detail">recipe_detail</string>
+    <string name="recepies">Recepies</string>
 </resources>
