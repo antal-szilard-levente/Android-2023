@@ -7,12 +7,15 @@ import android.util.Log
 import androidx.navigation.findNavController
 import com.tasty.recipesapp.R
 import com.tasty.recipesapp.databinding.ActivityMainBinding
+import com.tasty.recipesapp.repositories.RepositoryProvider
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        RepositoryProvider.initialize(applicationContext)
 
         val navController = findNavController(R.id.nav_host)
         binding.bottomNavigation.setOnItemSelectedListener{

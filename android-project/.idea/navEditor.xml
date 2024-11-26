@@ -13,19 +13,20 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="y" value="-158" />
+                            <option name="x" value="-15" />
+                            <option name="y" value="-255" />
                           </Point>
                         </option>
                       </LayoutPositions>
                     </value>
                   </entry>
-                  <entry key="mainActivity">
+                  <entry key="newRecipeFragment">
                     <value>
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-174" />
-                            <option name="y" value="108" />
+                            <option name="x" value="-11" />
+                            <option name="y" value="47" />
                           </Point>
                         </option>
                       </LayoutPositions>
@@ -60,18 +61,13 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-4" />
-                            <option name="y" value="111" />
+                            <option name="x" value="-208" />
+                            <option name="y" value="53" />
                           </Point>
                         </option>
                         <option name="myPositions">
                           <map>
-                            <entry key="action_recipeFragment_to_recipeDetailFragment">
-                              <value>
-                                <LayoutPositions />
-                              </value>
-                            </entry>
-                            <entry key="action_recipeFragment_to_recipeDetailFragment2">
+                            <entry key="action_recipeFragment_to_newRecipeFragment">
                               <value>
                                 <LayoutPositions />
                               </value>

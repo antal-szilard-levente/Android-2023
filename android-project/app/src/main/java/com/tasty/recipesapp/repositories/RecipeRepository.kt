@@ -3,15 +3,14 @@ package com.tasty.recipesapp.repositories
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import com.tasty.recipesapp.models.Instruction
+import com.tasty.recipesapp.database.RecipeDao
 
-import com.tasty.recipesapp.dtos.InstructionDTO
 import com.tasty.recipesapp.dtos.NutritionDTO
 import com.tasty.recipesapp.dtos.RecipeDTO
+import com.tasty.recipesapp.models.Nutrition
 import com.tasty.recipesapp.models.Recipe
-import org.json.JSONObject
 
-class RecipeRepository {
+class RecipeRepository(val recipeDao: RecipeDao) {
 
     val dummyDataRecipes = """
         [
@@ -58,7 +57,17 @@ class RecipeRepository {
                 "instructions": []
             }
         ]"""
+    /*
+    fun ComponentDTO.toModel() : Component {
+        return Component {
+            rawText = this.rawText
+            extraComment = this.extraComment
+            ingredient = this.ingredient
+            position = this.position
+        }
 
+
+    } */
     fun RecipeDTO.toModel(): Recipe {
         val nutrition = this.nutrition ?: NutritionDTO(0, 0, 0, 0, 0, 0)
         return Recipe(
@@ -72,21 +81,23 @@ class RecipeRepository {
             originalVideoUrl = this.originalVideoUrl,
             country = this.country,
             numServings = this.numServings,
-            components = this.components,
-            instructions = this.instructions,
-            nutrition = nutrition)
+            components = listOf(),
+            instructions = listOf(),
+            nutrition = Nutrition(0)
+        )
     }
 
     fun List<RecipeDTO>.toModelList(): List<Recipe> {
         return this.map { it.toModel() }
     }
 
-    fun loadRecipeDTOs(): List<RecipeDTO> {
+    suspend fun loadRecipeDTOs(): List<RecipeDTO> {
+        val dbRecipes = recipeDao.getAllRecipes()
         val gson = Gson()
         val recipeList: List<RecipeDTO> = gson.fromJson(dummyDataRecipes, object : TypeToken<List<RecipeDTO>>() {}.type)
         Log.i("GSON", recipeList.toString())
         return recipeList
     }
 
-    fun getRecipes() = loadRecipeDTOs().toModelList()
+    suspend fun getRecipes() = loadRecipeDTOs().toModelList()
 }

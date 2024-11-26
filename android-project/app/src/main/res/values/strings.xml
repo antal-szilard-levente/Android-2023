@@ -6,4 +6,5 @@
     <string name="recipe_page">Recipe</string>
     <string name="go_to_recipe_detail">recipe_detail</string>
     <string name="recepies">Recepies</string>
+    <string name="add_new">Add_new</string>
 </resources>

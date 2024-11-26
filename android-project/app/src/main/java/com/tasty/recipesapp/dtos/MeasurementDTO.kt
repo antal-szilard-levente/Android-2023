@@ -1,6 +1,6 @@
 package com.tasty.recipesapp.dtos
 
-data class MeasurmentDTO(
+data class MeasurementDTO(
     val quantity : Int,
     val unit: UnitDTO
 

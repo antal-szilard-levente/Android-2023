@@ -15,7 +15,7 @@ data class Recipe (
     val originalVideoUrl: String,
     val country: String,
     val numServings: Int,
-    val components: ComponentDTO,
-    val instructions: InstructionDTO,
-    val nutrition: NutritionDTO
+    val components: List <Component>,
+    val instructions:List  <Instruction>,
+    val nutrition: Nutrition
 )

@@ -1,26 +1,25 @@
 package com.tasty.recipesapp.ui.recipe
 
-import android.os.Bundle
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.tasty.recipesapp.R
-import com.tasty.recipesapp.models.Instruction
+import androidx.lifecycle.viewModelScope
 import com.tasty.recipesapp.models.Recipe
 import com.tasty.recipesapp.repositories.RecipeRepository
+import com.tasty.recipesapp.repositories.RepositoryProvider
+import kotlinx.coroutines.launch
 
 private const val ARG_PARAM1 = "id"
 class RecipesViewModel: ViewModel() {
     private val recipeList = MutableLiveData<List<Recipe>>()
     val recipes : LiveData<List<Recipe>> = recipeList
-    private val repository = RecipeRepository()
+
 
     fun loadRecipeData() {
-        recipeList.value = repository.getRecipes()
+        fun getRecipeById(id: Long)  {
+            viewModelScope.launch {
+                recipeList.value = RepositoryProvider.recipeRepository.getRecipes()
+            }
     }
 
 }

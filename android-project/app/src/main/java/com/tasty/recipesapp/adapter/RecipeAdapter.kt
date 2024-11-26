@@ -1,5 +1,15 @@
 package com.tasty.recipesapp.adapter
 
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.tasty.recipesapp.R
+
+
+import com.tasty.recipesapp.models.Recipe
+
 class RecipeAdapter(private val dataSet: List<Recipe>) :
     RecyclerView.Adapter<RecipeAdapter.ViewHolder>() {
 
@@ -13,8 +23,8 @@ class RecipeAdapter(private val dataSet: List<Recipe>) :
 
         init {
             // Define click listener for the ViewHolder's View
-            recipeName = view.findViewById(R.id.recipe_name)
-            recipeDescription = view.findViewById(R.id.recipe_description)
+            recipeName = view.findViewById(R.id.recipeTitle)
+            recipeDescription = view.findViewById(R.id.recipeDescription)
         }
     }
 
@@ -22,7 +32,7 @@ class RecipeAdapter(private val dataSet: List<Recipe>) :
     override fun onCreateViewHolder(viewGroup: ViewGroup, viewType: Int): ViewHolder {
         // Create a new view, which defines the UI of the list item
         val view = LayoutInflater.from(viewGroup.context)
-            .inflate(R.layout.fragment_single_recipe, viewGroup, false)
+            .inflate(R.layout.single_recipe, viewGroup, false)
 
         return ViewHolder(view)
     }
