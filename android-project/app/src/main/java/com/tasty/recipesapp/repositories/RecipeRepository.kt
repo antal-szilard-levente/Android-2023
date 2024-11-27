@@ -4,11 +4,19 @@ import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.tasty.recipesapp.database.RecipeDao
+import com.tasty.recipesapp.dtos.IngredientDTO
+import com.tasty.recipesapp.dtos.InstructionDTO
+import com.tasty.recipesapp.dtos.MeasurementDTO
 
 import com.tasty.recipesapp.dtos.NutritionDTO
 import com.tasty.recipesapp.dtos.RecipeDTO
+import com.tasty.recipesapp.dtos.UnitDTO
+import com.tasty.recipesapp.models.Ingredient
+import com.tasty.recipesapp.models.Instruction
+import com.tasty.recipesapp.models.Measurement
 import com.tasty.recipesapp.models.Nutrition
 import com.tasty.recipesapp.models.Recipe
+import org.json.JSONObject
 
 class RecipeRepository(val recipeDao: RecipeDao) {
 
@@ -65,9 +73,50 @@ class RecipeRepository(val recipeDao: RecipeDao) {
             ingredient = this.ingredient
             position = this.position
         }
+    }
+     fun IngredientDTO.toModel() : Ingredient {
+        return Ingredient {
+            name = this.name
+        }
+    }
+    fun InstructionDTO.toModel() : Instruction{
+        return Instruction {
+            instructionID = this.instructionID
+            displayText = this.displayText
+            position = this.position
+        }
+    }
+    fun MeasurementDTO.toModel() : Measurement{
+        return Measurement{
+            quantity = this.quantity
+            unit = this.unit
+        }
+    }
+
+    fun NutritionDTO.toModel(): Nutrition{
+        return Nutrition {
+            calories = this.calories
+           protein = this.protein
+            fat = this.fat
+            carbohydrates = this.carbohydrates
+            sugar = this.sugar
+            fiber = this.fiber
+        }
+    }
+    fun UnitDTO.toModel() : Unit {
+        return Unit {
+            name = this.name
+            displaySingular = this.displaySingular
+            displayMultiple = this.displayMultiple
+            abbreviation = this.abbreviation
+        }
+    }
 
 
-    } */
+    */
+
+
+
     fun RecipeDTO.toModel(): Recipe {
         val nutrition = this.nutrition ?: NutritionDTO(0, 0, 0, 0, 0, 0)
         return Recipe(
@@ -92,11 +141,12 @@ class RecipeRepository(val recipeDao: RecipeDao) {
     }
 
     suspend fun loadRecipeDTOs(): List<RecipeDTO> {
-        val dbRecipes = recipeDao.getAllRecipes()
         val gson = Gson()
-        val recipeList: List<RecipeDTO> = gson.fromJson(dummyDataRecipes, object : TypeToken<List<RecipeDTO>>() {}.type)
-        Log.i("GSON", recipeList.toString())
-        return recipeList
+        return recipeDao.getAllRecipes().map {
+            val jsonObject = JSONObject(it.json)
+            jsonObject.apply { put("recipeID", it.internalId) }
+            gson.fromJson(jsonObject.toString(), RecipeDTO::class.java)
+        }
     }
 
     suspend fun getRecipes() = loadRecipeDTOs().toModelList()
