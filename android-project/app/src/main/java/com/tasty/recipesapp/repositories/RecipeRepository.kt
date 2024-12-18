@@ -1,9 +1,12 @@
 package com.tasty.recipesapp.repositories
 
+
 import android.util.Log
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.tasty.recipesapp.api.RecipeApiClient
 import com.tasty.recipesapp.database.RecipeDao
+import com.tasty.recipesapp.dtos.ComponentDTO
 import com.tasty.recipesapp.dtos.IngredientDTO
 import com.tasty.recipesapp.dtos.InstructionDTO
 import com.tasty.recipesapp.dtos.MeasurementDTO
@@ -11,12 +14,14 @@ import com.tasty.recipesapp.dtos.MeasurementDTO
 import com.tasty.recipesapp.dtos.NutritionDTO
 import com.tasty.recipesapp.dtos.RecipeDTO
 import com.tasty.recipesapp.dtos.UnitDTO
+import com.tasty.recipesapp.models.Component
 import com.tasty.recipesapp.models.Ingredient
 import com.tasty.recipesapp.models.Instruction
 import com.tasty.recipesapp.models.Measurement
-import com.tasty.recipesapp.models.Nutrition
 import com.tasty.recipesapp.models.Recipe
+import com.tasty.recipesapp.models.UnitModel
 import org.json.JSONObject
+import com.tasty.recipesapp.models.Nutrition as Nutrition
 
 class RecipeRepository(val recipeDao: RecipeDao) {
 
@@ -65,74 +70,69 @@ class RecipeRepository(val recipeDao: RecipeDao) {
                 "instructions": []
             }
         ]"""
-    /*
+
     fun ComponentDTO.toModel() : Component {
-        return Component {
-            rawText = this.rawText
-            extraComment = this.extraComment
-            ingredient = this.ingredient
+        return Component (
+            rawText = this.rawText ,
+            extraComment = this.extraComment ,
+            ingredient = this.ingredient ,
             position = this.position
-        }
+        )
     }
      fun IngredientDTO.toModel() : Ingredient {
-        return Ingredient {
+        return Ingredient (
             name = this.name
-        }
+        )
     }
     fun InstructionDTO.toModel() : Instruction{
-        return Instruction {
-            instructionID = this.instructionID
-            displayText = this.displayText
+        return Instruction (
+            instructionID = this.instructionID ,
+            displayText = this.displayText ,
             position = this.position
-        }
+        )
     }
     fun MeasurementDTO.toModel() : Measurement{
-        return Measurement{
-            quantity = this.quantity
+        return Measurement (
+            quantity = this.quantity ,
             unit = this.unit
-        }
+        )
     }
 
-    fun NutritionDTO.toModel(): Nutrition{
-        return Nutrition {
-            calories = this.calories
-           protein = this.protein
-            fat = this.fat
-            carbohydrates = this.carbohydrates
-            sugar = this.sugar
+    fun NutritionDTO.toModel(): Nutrition {
+        return Nutrition (
+            calories = this.calories ,
+           protein = this.protein ,
+            fat = this.fat ,
+            carbohydrates = this.carbohydrates ,
+            sugar = this.sugar ,
             fiber = this.fiber
-        }
+        )
     }
-    fun UnitDTO.toModel() : Unit {
-        return Unit {
-            name = this.name
-            displaySingular = this.displaySingular
-            displayMultiple = this.displayMultiple
+    fun UnitDTO.toModel() : UnitModel {
+        return UnitModel(
+            name = this.name,
+            displaySingular = this.displaySingular,
+            displayMultiple = this.displayMultiple,
             abbreviation = this.abbreviation
-        }
+        )
     }
-
-
-    */
-
-
 
     fun RecipeDTO.toModel(): Recipe {
-        val nutrition = this.nutrition ?: NutritionDTO(0, 0, 0, 0, 0, 0)
+        val nutrition = this.nutrition?.toModel() ?: Nutrition(0, 0, 0, 0, 0, 0)
         return Recipe(
             recipeID = this.recipeID,
             name = this.name,
-            description = this.description,
-            thumbnailUrl = this.thumbnailUrl,
-            keywords = this.keywords,
-            isPublic = this.isPublic,
-            userEmail = this.userEmail,
-            originalVideoUrl = this.originalVideoUrl,
-            country = this.country,
-            numServings = this.numServings,
-            components = listOf(),
-            instructions = listOf(),
-            nutrition = Nutrition(0)
+            description = this.description ?: "",
+            thumbnailUrl = this.thumbnailUrl ?: "URES",
+            keywords = this.keywords ?: "",
+            isPublic = this.isPublic ?: false,
+            userEmail = this.userEmail ?: "",
+            originalVideoUrl = this.originalVideoUrl ?: "",
+            country = this.country ?: "",
+            numServings = this.numServings ?: 0,
+            components = this.components?.map { it.toModel() } ?:listOf(),
+            instructions = this.instructions?.map { it.toModel() } ?: listOf(),
+            nutrition = nutrition
         )
     }
 
@@ -145,9 +145,27 @@ class RecipeRepository(val recipeDao: RecipeDao) {
         return recipeDao.getAllRecipes().map {
             val jsonObject = JSONObject(it.json)
             jsonObject.apply { put("recipeID", it.internalId) }
+            Log.i("logrecipe","Recipe fetched ${it.internalId}"  )
             gson.fromJson(jsonObject.toString(), RecipeDTO::class.java)
         }
     }
 
-    suspend fun getRecipes() = loadRecipeDTOs().toModelList()
+    suspend fun loadRecipesFromAPI(): List<RecipeDTO> {
+        val gson = Gson()
+        return recipeDao.getAllRecipes().map {
+            val jsonObject = JSONObject(it.json)
+            jsonObject.apply { put("recipeID", it.internalId) }
+            Log.i("logrecipe","Recipe fetched ${it.internalId}"  )
+            gson.fromJson(jsonObject.toString(), RecipeDTO::class.java)
+        }
+    }
+
+
+    suspend fun getRecipes() = loadRecipesFromAPI().toModelList()
+
+    private val recipeApiClient = RecipeApiClient()
+    suspend fun getRecipesFromApi(): List<Recipe> {
+        return recipeApiClient.getRecipes()?.toModelList() ?: emptyList()
+    }
+
 }

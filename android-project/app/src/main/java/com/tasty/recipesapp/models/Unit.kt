@@ -1,6 +1,6 @@
 package com.tasty.recipesapp.models
 
-data class Unit(
+data class UnitModel(
     val name : String,
     val displaySingular: String,
     val displayMultiple: String,

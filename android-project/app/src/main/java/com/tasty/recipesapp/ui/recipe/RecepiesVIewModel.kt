@@ -16,10 +16,11 @@ class RecipesViewModel: ViewModel() {
 
 
     fun loadRecipeData() {
-        fun getRecipeById(id: Long)  {
-            viewModelScope.launch {
-                recipeList.value = RepositoryProvider.recipeRepository.getRecipes()
-            }
-    }
 
+            viewModelScope.launch {
+                recipeList.value = RepositoryProvider.recipeRepository.getRecipesFromApi()
+            }
+
+
+}
 }

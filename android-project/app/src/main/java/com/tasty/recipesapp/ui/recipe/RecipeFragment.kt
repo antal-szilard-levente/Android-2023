@@ -41,9 +41,9 @@ class RecipeFragment : Fragment() {
         viewModel.recipes.observe(viewLifecycleOwner) { recipies ->
             binding.recipeList.adapter = RecipeAdapter(recipies)
         }
-         binding.adNewRecipe.setOnClickListener{
+         /*binding.adNewRecipe.setOnClickListener{
             findNavController().navigate(R.id.action_recipeFragment_to_newRecipeFragment)
-        }
+        }*/
     }
 
 }

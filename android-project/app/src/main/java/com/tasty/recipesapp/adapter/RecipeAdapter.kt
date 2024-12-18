@@ -3,8 +3,10 @@ package com.tasty.recipesapp.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.tasty.recipesapp.R
 
 
@@ -20,11 +22,12 @@ class RecipeAdapter(private val dataSet: List<Recipe>) :
     class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val recipeName: TextView
         val recipeDescription: TextView
-
+        val recipeImage: ImageView
         init {
             // Define click listener for the ViewHolder's View
             recipeName = view.findViewById(R.id.recipeTitle)
             recipeDescription = view.findViewById(R.id.recipeDescription)
+            recipeImage =view.findViewById(R.id.recipeImage)
         }
     }
 
@@ -44,6 +47,12 @@ class RecipeAdapter(private val dataSet: List<Recipe>) :
         // contents of the view with that element
         viewHolder.recipeName.text = dataSet[position].name
         viewHolder.recipeDescription.text = dataSet[position].description
+        Glide.with(viewHolder.itemView)
+            .load(dataSet[position].thumbnailUrl)
+            .placeholder(R.drawable.kepjo) // Placeholder image
+            .error(R.drawable.kepjo) // Error fallback image
+            .centerCrop()
+            .into(viewHolder.recipeImage)
     }
 
     // Return the size of your dataset (invoked by the layout manager)
